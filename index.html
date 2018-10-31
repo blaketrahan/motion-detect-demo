@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>✋</title>
+  <style>h1,label{line-height:2;font-family:sans-serif;display:block}.live-update,button{border:1px solid #ccc;background:#fff;padding:0 1rem}.live-update,button,input{padding:0 1rem}h1,label,section{display:block}html{font-size:10px}h1,input,label{font-size:1.5rem}body{margin:0}canvas{image-rendering:pixelated}#console{position:fixed;top:0;right:0;width:30rem;background:#eee;border:1px solid #aaa;padding:1rem;z-index:10}label{margin-bottom:.5rem}input{width:8rem;line-height:2.5rem;height:2.5rem;text-align:right;margin-left:1rem;box-sizing:border-box;float:right}h1{margin:0 0 3rem 1rem}.live-update{margin-bottom:1rem}button{line-height:3;font-size:1rem;margin-right:1rem}
+  </style>
+</head>
+<body>
+  <div id="console">
+    <label>Processed image width (px)
+      <input id="input-width" value="500"/>
+    </label>
+    <label>Processing Interval (ms)
+      <input id="input-interval" value="100"/>
+    </label>
+    <br>
+    <div class="live-update">
+      <h1>Live values:</h1>
+      <label>Color threshold (0-255)
+        <input id="input-threshold" value="100"/>
+      </label>
+      <label>Minimum motion points
+        <input id="input-min_pts" value="100"/>
+      </label>
+      <label>Concavity (1 - Infinity)
+        <input id="input-concavity" value="Infinity"/>
+      </label>
+      <br>
+      <label>Red measure (0.0 - 1.0)
+        <input id="input-r" value="0.9"/>
+      </label>
+      <label>Green measure (0.0 - 1.0)
+        <input id="input-g" value="0.7"/>
+      </label>
+      <label>Blue measure (0.0 - 1.0)
+        <input id="input-b" value="0.3"/>
+      </label>
+    </div>
+    <button id="input-apply">Apply settings</button>
+    <button id="start">start</button>
+  </div>
+  
+  <section>
+    <video id="video" autoplay></video>
+    <h1>#1: Video. Original source image.</h1>
+  </section>
+
+  <section>
+    <canvas id="diff"></canvas>
+    <h1>#2: Difference. This is the image source for processing.</h1>
+  </section>
+
+  <section>
+    <canvas id="diff_effect"></canvas>
+    <h1>#3: Difference. Only to show the effect happening in #2 during render()</h1>
+  </section>
+
+  <section>
+    <canvas id="canvas"></canvas>
+    <h1>#4 Visualize data (motion_pts and convex_hull)</h1>
+  </section>
+
+  <script>
+    /*
+      Just a way to update the control values
+    */
+
+    function update_settings () {
+      let control = {
+        width: document.getElementById('input-width').value || 200,
+        threshold: document.getElementById('input-threshold').value || 100,
+        interval: document.getElementById('input-interval').value || 100,
+        min_pts: document.getElementById('input-min_pts').value || 100,
+        concavity:document.getElementById('input-concavity').value || Infinity, 
+        r: document.getElementById('input-r').value || 0.8,
+        g: document.getElementById('input-g').value || 0.5,
+        b: document.getElementById('input-b').value || 0.2,
+      };
+      return control;
+    }
+    
+    document.getElementById('input-apply').addEventListener('click', function () {
+      control = update_settings();
+    });
+    
+    document.getElementById('start').addEventListener('click', function () {    
+      this.style.display = "none";
+      control = update_settings();
+      start_app();
+    });
+
+    let control = update_settings();
+
+  </script>
+
+  <script src="./hull.js"></script>
+  <script src="./main.js"></script>
+</body>
+</html> 
